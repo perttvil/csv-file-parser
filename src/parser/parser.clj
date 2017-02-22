@@ -68,4 +68,4 @@
 (defn write-file [out entities]
   (spit out "track_id;measure_date;measure_time;measure_time_seconds;measure_time_millis;x_coord;y_coord;distance;elapsed_time;speed;angle")
   (doseq [e-list entities]
-    (spit out (join \newline (map format-csv-row e-list)) :append true)))
+    (spit out (join \newline (conj (map format-csv-row e-list) "")) :append true)))
