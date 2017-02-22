@@ -43,18 +43,29 @@
       (#(partition 4 %1))
       (#(pmap join-data-points %1))))
 
+(def date "20160913")
+(defn ->seconds "Return integer part of double" [t]
+  (int t))
+
+(defn ->millis "Return decimal numbers from given double as integer" [t]
+  (int (* (- (bigdec t) (->seconds t)) 1000)))
+
 (defn- format-csv-row [e]
   (join ";"
         (-> (list)
+            (conj (:angle e))
             (conj (:speed e))
             (conj (:duration e))
             (conj (:distance e))
             (conj (:y e))
             (conj (:x e))
+            (conj (->millis (:t e)))
+            (conj (->seconds (:t e)))
             (conj (:t e))
+            (conj date)
             (conj (:id e)))))
 
 (defn write-file [out entities]
-  (let [header "track_id;measure_time;x_coord;y_coord;relative_distance:relative_elapsed_time;relative_speed"
-        data (conj (pmap format-csv-row (flatten entities)) header)]
-    (spit out (join \newline data))))
+  (spit out "track_id;measure_date;measure_time;measure_time_seconds;measure_time_millis;x_coord;y_coord;distance;elapsed_time;speed;angle")
+  (doseq [e-list entities]
+    (spit out (join \newline (map format-csv-row e-list)) :append true)))

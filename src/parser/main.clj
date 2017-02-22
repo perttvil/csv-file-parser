@@ -9,7 +9,7 @@
         parsed (doall (parse in))
         phase2 (LocalDateTime/now)
         foobar1 (println (str "Parsing took: " (Duration/between phase1 phase2)))
-        counted (doall (count-values parsed))
+        counted (doall (count-values-for-entities parsed))
         phase3 (LocalDateTime/now)
         foobar2 (println (str "Counting values took: " (Duration/between phase2 phase3)))]
     (write-file out counted)
